@@ -10,17 +10,27 @@ class Message(object):
 
 class ScenarioData(object):
 
-    def __init__(self, name, messages, message_order):
+    def __init__(self, name, messages, message_order, host=None, port=None):
         self.name = name
         self.messages = messages
         self.message_rder = message_order
+        self.host = host
+        self.port = port
+
+    def set_remote_address(self, host, port):
+        """Set host and port attributes"""
+        self.host = host
+        self.port = port
 
     @staticmethod
     def create_from_dictionary(data):
-        scenario_name = data['name']
         messages = ScenarioData.collect_messages(data)
-        message_order = data['messagesOrder']
-        return ScenarioData(scenario_name, messages, message_order)
+        message_order = data['messageOrder']
+        if data['host'] and data['port']:
+            return ScenarioData(data['name'], messages, message_order,
+                                host=data['host'], port=data['port'])
+        else:
+            return ScenarioData(data['name'], messages, message_order)
 
     @staticmethod
     def collect_messages(data):
@@ -38,8 +48,19 @@ class ScenarioData(object):
         return messages
 
 
-
 class Scenario(object):
 
-    def __init__(self, scenario_data):
+    def __init__(self, scenario_data, messaging_client):
         self.scenario_data = scenario_data
+        self.client = messaging_client
+
+    def run(self):
+        host = self.scenario_data.host
+        port = self.scenario_data.port
+        print(port)
+        print("Connecting to '" + host + ":" + str(port) + "'...\n")
+        self.client.connect(host, port)
+        self.client.send_message("Hello world!")
+        response = self.client.receive_response()
+        print(response)
+        self.client.close()
