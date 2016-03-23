@@ -1,52 +1,24 @@
-from message_client.option_parser import MessageClientOptionParser
-from message_client.message_client import MessageClient
-from message_tester.scenario_parser import ParseScenario
-from message_tester.scenario import ScenarioData
-
-DEFAULT_HOST = '127.0.0.1'
-DEFAULT_PORT = 8700
+from messaging_client.messaging_client import MessagingClient
+from test_messaging.scenario_parser import ParseScenario
+from test_messaging.scenario import ScenarioData, Scenario
 
 
 class App():
 
     def __init__(self):
 
-        self.parser = MessageClientOptionParser()
-        self.parser.parse_options()
-
-        self.client = MessageClient()
-
-    def get_host(self):
-        try:
-            host = self.parser.host
-        except AttributeError:
-            host = DEFAULT_HOST
-        return host
-
-    def get_port(self):
-        try:
-            port = self.parser.port
-        except AttributeError:
-            port = DEFAULT_PORT
-        return port
+        self.client = MessagingClient()
+        self.command_line_values = self.client.parse_command_line()
 
     def get_scenario_data(self):
-        scenario_data = ParseScenario.to_dictionary(self.parser.filename)
+        scenario_data = ParseScenario.to_dictionary(
+                                self.command_line_values['file'])
         return ScenarioData.create_from_dictionary(scenario_data)
 
-
-    def run(self, ):
-        host = self.getHost()
-        port = self.getPort()
-
-        scenario = self.get_scenario_data()
-
-        print("Connecting to '" + host + ":" + str(port) + "'...\n")
-        self.client.connect(host, port)
-
-        # run scenario
-
-        self.client.close()
+    def run(self):
+        scenario_data = self.get_scenario_data()        
+        scenario = Scenario(scenario_data, self.client)
+        scenario.run()
 
 
 def main():
