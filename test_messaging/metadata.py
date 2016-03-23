@@ -1,0 +1,8 @@
+NAME = 'test-messaging'
+VERSION = '0.0.1'
+DESCRIPTION = 'Network messaging testing tool.'
+URL = 'https://github.com/mjalas/test-messaging'
+AUTHOR = 'Mats Jalas'
+AUTHOR_EMAIL = 'mats.jalas@gmail.com'
+LICENSE = 'MIT'
+KEYWORDS = 'testing messaging'
