@@ -16,14 +16,10 @@ class App():
         return ScenarioData.create_from_dictionary(scenario_data)
 
     def run(self):
-        scenario_data = self.get_scenario_data()        
+        scenario_data = self.get_scenario_data()
         scenario = Scenario(scenario_data, self.client)
         scenario.run()
 
-
-def main():
+if __name__ == '__main__':
     app = App()
     app.run()
-
-if __name__ == '__main__':
-    main()
